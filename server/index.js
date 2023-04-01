@@ -10,21 +10,39 @@ const PORT = process.env.PORT || 3001;
 
 const app = express();
 
-async function getMongoStuff() {
+async function getMongoStuff(char) {
   // Use connect method to connect to the server
   await client.connect();
   const db = client.db(dbName);
-  const collection = db.collection('skills');
 
-  const findResult = await collection.find({"charid": 1}).toArray();
-  console.log('Found documents =>', findResult);
+  if (char == -1) {
+    const collection = db.collection('characters');
+    const findResult = await collection.find().toArray();
+    console.log('Found characters =>', findResult);
 
-  return findResult;
+    return findResult;
+  } else {
+    console.log("Looking for skills of char " + char);
+    const collection = db.collection('skills');
+    const findResult = await collection.find({"charid": parseInt(char)}).toArray();
+    console.log('Found documents =>', findResult);
+
+    return findResult;    
+  }
+
 }
 
-app.get("/api", async (req, res) => {
+app.get("/api/chars", async (req, res) => {
+  /* Minor hax - use a better argument to this function */
+  mongojson = await getMongoStuff(-1);
+
+  res.json(mongojson);
+});
+
+app.get("/api/skills", async (req, res) => {
+  console.log(req.query.char);
   // res.json({message: "Strength +4"})
-  mongojson = await getMongoStuff();
+  mongojson = await getMongoStuff(req.query.char);
 
   /* res.json([
     {type: "dnd", desc: "Strength +3", mod: 3},
