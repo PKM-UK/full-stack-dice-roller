@@ -86,22 +86,26 @@ async function updateMongoStuff(data) {
     // console log incoming ID and IDs of records we find, all that jazz
     // create a filter for a movie to update
 
+    console.log("Update rq data: " + JSON.stringify(data))
+
     console.log("Looking for skill reocrds with _id " + data['skillid']);
     let filterid = new mongo.ObjectId(data['skillid']);
     console.log("Filtering by object id " + filterid);
     const filter = { _id: filterid };
 
-    // create a document that sets the plot of the movie
+    // create a document that sets the deets
     const updateDoc = {
       $set: {
-        mod: data.value
+        charid: data.charid,
+        desc:data.desc,        
+        mod: data.mod
       },
     };
-    // this option instructs the method not to create a document if no documents match the filter
-    const options = { upsert: false };
+    // this option instructs the method to create a document if no documents match the filter
+    const options = { upsert: true };
 
     result = await skills.updateOne(filter, updateDoc, options);
-    console.log(`${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`);
+    console.log(`${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount}, upserted ${result.upsertedCount}`);
   } finally {
     await client.close();
   }
