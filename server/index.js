@@ -113,9 +113,29 @@ async function updateMongoStuff(data) {
   return result;
 }
 
+async function deleteMongoStuff(data) {
 
+  let result;
+  try {
+    await client.connect();
+    const database = client.db(dbName);
+    const skills = database.collection("skills");
 
+    console.log("Delete rq data: " + JSON.stringify(data))
 
+    console.log("Looking for skill reocrds with _id " + data['_id']);
+    let filterid = new mongo.ObjectId(data['_id']);
+    console.log("Filtering by object id " + filterid);
+    const filter = { _id: filterid };
+
+    result = await skills.deleteOne(filter);
+    console.log(`${result.matchedCount} document(s) matched the filter`);
+  } finally {
+    await client.close();
+  }
+
+  return result;
+}
 
 
 
@@ -141,6 +161,15 @@ app.post('/api/updateskills', async (req, res) => {
 
   let data = req.body;
   donezo = await updateMongoStuff(data);
+
+  // res.send(JSON.stringify(donezo));
+  res.json(donezo);
+});
+
+app.post('/api/deleteskills', async (req, res) => {
+
+  let data = req.body;
+  donezo = await deleteMongoStuff(data);
 
   // res.send(JSON.stringify(donezo));
   res.json(donezo);
