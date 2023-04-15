@@ -88,8 +88,8 @@ async function updateMongoStuff(data) {
 
     console.log("Update rq data: " + JSON.stringify(data))
 
-    console.log("Looking for skill reocrds with _id " + data['skillid']);
-    let filterid = new mongo.ObjectId(data['skillid']);
+    console.log("Looking for skill reocrds with _id " + data['_id']);
+    let filterid = new mongo.ObjectId(data['_id']);
     console.log("Filtering by object id " + filterid);
     const filter = { _id: filterid };
 
@@ -140,10 +140,6 @@ app.get("/api/skills", async (req, res) => {
 app.post('/api/updateskills', async (req, res) => {
 
   let data = req.body;
-
-  /* data is now an object telling us what to do
-     Schema of request body: { skillid: skill['_id'], value: newValue } */
-
   donezo = await updateMongoStuff(data);
 
   // res.send(JSON.stringify(donezo));
