@@ -1,0 +1,16 @@
+.skill {
+    border:  1px solid #ccc;
+    width:  500px;
+    padding: 1em;
+    margin-bottom:  0.5em;
+}
+
+.skill button {
+    float: right;
+    margin-left: 5px;
+} 
+
+.modedit {
+    width: 50px;
+    margin-left: 1em;
+}
